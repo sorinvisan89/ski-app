@@ -2,16 +2,15 @@ package com.demo.skiapp.service;
 
 import com.demo.skiapp.entity.SportEntity;
 import com.demo.skiapp.mapper.CustomDataMapper;
-import com.demo.skiapp.model.Place;
 import com.demo.skiapp.model.PlaceSearchResult;
 import com.demo.skiapp.repository.SportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -34,6 +33,11 @@ public class SportService {
         long daysBetween = DAYS.between(startDate, endDate);
         //TODO
         List<SportEntity> results = sportRepository.findInSearch(sports, startDate, endDate);
+
+        Map<String, List<SportEntity>> groupByPlace = results.stream()
+                .collect(Collectors.groupingBy(sport -> sport.getParentPlace().getPlaceName()));
+
+
         return null;
     }
 

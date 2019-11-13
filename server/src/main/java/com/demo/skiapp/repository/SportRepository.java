@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface SportRepository extends JpaRepository<SportEntity, String> {
 
-    @Query("SELECT sport FROM SportEntity sport WHERE sport.sportName in (:sportNames) AND sport.endDate <= :endDate AND sport.startDate >= :starDate")
+    @Query("SELECT sport FROM SportEntity sport WHERE sport.sportName in (:sportNames) AND sport.endDate <= :endDate AND sport.startDate >= :startDate")
     List<SportEntity> findInSearch(@Param("sportNames")List<String> sportNames,
                                    @Param("startDate")LocalDate startDate,
                                    @Param("endDate")LocalDate endDate);
