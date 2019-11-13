@@ -1,0 +1,268 @@
+openapi: 3.0.0
+info:
+  description: Provides a service for the Ski App
+  version: 1.0.0
+  title: Ski application
+tags:
+  - name: Places
+    description: Controller to handle places
+  - name: Search
+    description: Controller to handle searches
+
+paths:
+  "/v1/places":
+    get:
+      tags:
+        - Places
+      operationId: getPlaces
+      description: Gets all the places
+      responses:
+        "200":
+          description: Places retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Place'
+
+  "/v1/places/{placeName}":
+    get:
+      tags:
+        - Places
+      operationId: getPlace
+      description: Gets a specific place
+      parameters:
+        - in: path
+          required: true
+          name: placeName
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Place retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Place'
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      tags:
+        - Places
+      operationId: deletePlace
+      description: Deletes a specific place
+      parameters:
+        - in: path
+          required: true
+          name: placeName
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Place deleted correctly
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      tags:
+        - Places
+      operationId: updatePlace
+      description: Updates an existing Place(full update)
+      parameters:
+        - in: path
+          required: true
+          name: placeName
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatablePlaceFields"
+      responses:
+        "200":
+          description: Place updated
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+
+    patch:
+      tags:
+        - Places
+      operationId: partialUpdatePlace
+      description: Updates partially an existing Place
+      parameters:
+        - in: path
+          required: true
+          name: placeName
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatablePlaceFields"
+      responses:
+        "200":
+          description: Place updated
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+
+  "/v1/place":
+    post:
+      tags:
+        - Places
+      operationId: addPlace
+      description: Adds a new Place
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Place"
+        description: The GigaStor Info
+        required: true
+      responses:
+        "200":
+          description: Place added succesfully
+        "409":
+          $ref: "#/components/responses/Conflict"
+
+
+  "/v1/places/search":
+    get:
+      tags:
+        - Search
+      operationId: searchPlaces
+      description: Get filtered places searched by some criteria
+      parameters:
+        - name: sports
+          in: query
+          required: true
+          schema:
+            type: array
+            description: The sports to be searched for
+            items:
+              type: string
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            description: The start date for the search period
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            description: The end date for the search period
+      responses:
+        "200":
+          description: Places retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlaceSearchResult'
+
+
+
+components:
+  responses:
+    BadRequest:
+      description: "Indicates the message body contained one or more errors."
+    NotFound:
+      description: "Indicates the identified resource does not exist."
+    Conflict:
+      description: "Indicates that the resource already exist and cannot be created"
+
+  schemas:
+    Place:
+      description: Place Information
+      type: object
+      required:
+        - placeName
+        - country
+        - region
+        - zone
+        - sports
+      properties:
+        placeName:
+          type: string
+          description: Name of the place
+        country:
+          description: The country of this place
+          type: string
+        region:
+          description: The region of this place
+          type: string
+        zone:
+          description: The zone of this place
+          type: string
+        sports:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sport"
+
+    UpdatablePlaceFields:
+      description: The Place fields which can be updated
+      type: object
+      properties:
+        country:
+          description: The country of this place
+          type: string
+        region:
+          description: The region of this place
+          type: string
+        zone:
+          description: The zone of this place
+          type: string
+        sports:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sport"
+
+    Sport:
+      description: The sport information
+      type: object
+      required:
+        - sportName
+        - dailyAverageCost
+        - startDate
+        - endDate
+      properties:
+        sportName:
+          description: The name of the sport
+          type: string
+        startDate:
+          description: The start date
+          type: string
+          format: date
+        endDate:
+          description: The end date
+          type: string
+          format: date
+        dailyAverageCost:
+          type: number
+          format: float
+
+    PlaceSearchResult:
+      description: The sport information
+      type: object
+      properties:
+        placeInfo:
+          $ref: "#/components/schemas/Place"
+        totalCost:
+          description: The total cost for the search period
+          type: number
+
+
+
+
+
+

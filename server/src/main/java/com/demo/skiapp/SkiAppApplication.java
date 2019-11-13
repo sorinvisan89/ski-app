@@ -9,5 +9,4 @@ public class SkiAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SkiAppApplication.class, args);
 	}
-
 }
