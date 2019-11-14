@@ -5,8 +5,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -18,9 +18,11 @@ public class PlaceEntity implements Serializable {
     @Column(name = "place_name")
     private String placeName;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "parentPlace")
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            mappedBy = "parentPlace")
     @JsonBackReference
-    Set<SportEntity> sports = new HashSet<>();
+    List<SportEntity> sports = new ArrayList<>();
 
     @Column(name = "country")
     private String country;
@@ -31,19 +33,8 @@ public class PlaceEntity implements Serializable {
     @Column(name = "zone")
     private String zone;
 
-    public void removeSport(SportEntity sport) {
-        this.sports.remove(sport);
-    }
-
     public void addSport(SportEntity sport) {
         this.sports.add(sport);
+        sport.setParentPlace(this);
     }
-
-    public void setSports(Set<SportEntity> newSports) {
-        this.sports.clear();
-        if (newSports != null) {
-            this.sports.addAll(newSports);
-        }
-    }
-
 }

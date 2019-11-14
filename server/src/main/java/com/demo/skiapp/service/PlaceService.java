@@ -46,6 +46,11 @@ public class PlaceService {
             throw new ServiceException("Place: " + toAdd + " already exists!", HttpStatus.CONFLICT);
         }
         PlaceEntity toPersist = customDataMapper.toPlaceEntity(newPlace);
+        List<SportEntity> sports =  newPlace.getSports().stream()
+                .map(customDataMapper::toSportEntity)
+                .collect(Collectors.toList());
+
+        sports.forEach(toPersist::addSport);
         placeRepository.save(toPersist);
     }
 
@@ -80,9 +85,11 @@ public class PlaceService {
 
         List<Sport> sportsToUpdate = updatablePlaceFields.getSports();
         if (sportsToUpdate != null) {
-            Set<SportEntity> newSports = new HashSet<>();
-            sportsToUpdate.forEach(sport -> newSports.add(customDataMapper.toSportEntity(sport)));
-            toUpdate.setSports(newSports);
+            toUpdate.getSports().clear();
+            sportsToUpdate.forEach(sport -> {
+                SportEntity newSport = customDataMapper.toSportEntity(sport);
+                toUpdate.addSport(newSport);
+            });
         }
 
         placeRepository.save(toUpdate);
@@ -98,17 +105,15 @@ public class PlaceService {
 
         List<Sport> sportsToUpdate = updatablePlaceFields.getSports();
         if (sportsToUpdate != null) {
-            Set<SportEntity> newSports = new HashSet<>();
-            sportsToUpdate.forEach(sport -> newSports.add(customDataMapper.toSportEntity(sport)));
-            toUpdate.setSports(newSports);
+            toUpdate.getSports().clear();
+            sportsToUpdate.forEach(sport -> {
+                SportEntity newSport = customDataMapper.toSportEntity(sport);
+                toUpdate.addSport(newSport);
+            });
         } else {
             toUpdate.setSports(null);
         }
 
         placeRepository.save(toUpdate);
-    }
-
-    private void updateExisting(){
-
     }
 }
