@@ -1,0 +1,21 @@
+version: '3'
+services:
+    postgres:
+      container_name: postgres
+      image: postgres
+      restart: always
+      ports:
+      - "5432:5432"
+  ski-app:
+    container_name: ski-app
+    build: .
+    image: ski-image
+    ports:
+    - "8080:8080"
+    environment:
+      POSTGRES_HOST: "postgres:5432"
+      POSTGRES_DB: "ski"
+      POSTGRES_USER: "ski"
+      POSTGRES_PASSWORD: "ski"
+    depends_on:
+    - postgres
