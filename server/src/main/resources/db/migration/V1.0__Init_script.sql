@@ -1,0 +1,3 @@
+CREATE TABLE places (place_name varchar(255) not null, country varchar(255), region varchar(255), zone varchar(255), primary key (place_name));
+CREATE TABLE sports (sport_name varchar(255) not null, daily_average_cost numeric(19, 2), end_date date, start_date date, place_parent varchar(255) not null, primary key (place_parent, sport_name));
+ALTER TABLE sports ADD CONSTRAINT places_sport_fk FOREIGN KEY (place_parent) REFERENCES places(place_name) ON DELETE CASCADE;
