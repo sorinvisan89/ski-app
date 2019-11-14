@@ -15,7 +15,25 @@ paths:
       tags:
         - Places
       operationId: getPlaces
-      description: Gets all the places
+      description: Gets all the places. You can free text search on their fields. Like country, region, etc
+      parameters:
+        - name: freeTextSearchPattern
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
       responses:
         "200":
           description: Places retrieved successfully

@@ -2,6 +2,7 @@ package com.demo.skiapp.service;
 
 import com.demo.skiapp.entity.PlaceEntity;
 import com.demo.skiapp.entity.SportEntity;
+import com.demo.skiapp.entity.specification.PlaceSpecification;
 import com.demo.skiapp.exception.ServiceException;
 import com.demo.skiapp.mapper.CustomDataMapper;
 import com.demo.skiapp.model.Place;
@@ -10,14 +11,14 @@ import com.demo.skiapp.model.UpdatablePlaceFields;
 import com.demo.skiapp.repository.PlaceRepository;
 import com.demo.skiapp.util.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +47,7 @@ public class PlaceService {
             throw new ServiceException("Place: " + toAdd + " already exists!", HttpStatus.CONFLICT);
         }
         PlaceEntity toPersist = customDataMapper.toPlaceEntity(newPlace);
-        List<SportEntity> sports =  newPlace.getSports().stream()
+        List<SportEntity> sports = newPlace.getSports().stream()
                 .map(customDataMapper::toSportEntity)
                 .collect(Collectors.toList());
 
@@ -54,9 +55,14 @@ public class PlaceService {
         placeRepository.save(toPersist);
     }
 
-    public List<Place> getPlaces() {
-        List<PlaceEntity> entites = placeRepository.findAll();
-        return entites.stream()
+    public List<Place> getPlaces(String freeTextSearchPattern,
+                                 Integer page,
+                                 Integer limit) {
+        Page<PlaceEntity> entites = placeRepository.findAll(
+                new PlaceSpecification(freeTextSearchPattern),
+                PageRequest.of(page, limit));
+
+        return entites.getContent().stream()
                 .map(customDataMapper::toPlaceModel)
                 .collect(Collectors.toList());
     }

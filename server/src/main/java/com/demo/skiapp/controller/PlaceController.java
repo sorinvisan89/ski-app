@@ -42,8 +42,10 @@ public class PlaceController implements PlacesApiDelegate {
     }
 
     @Override
-    public ResponseEntity<List<Place>> getPlaces() {
-        List<Place> results = placeService.getPlaces();
+    public ResponseEntity<List<Place>> getPlaces(String freeTextSearchPattern,
+                                                 Integer page,
+                                                 Integer limit) {
+        List<Place> results = placeService.getPlaces(freeTextSearchPattern, page, limit);
         return !results.isEmpty() ? ResponseEntity.ok(results) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
