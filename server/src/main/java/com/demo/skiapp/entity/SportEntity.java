@@ -15,11 +15,11 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "sports")
 @ToString(exclude = "parentPlace")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(exclude = "parentPlace")
+@IdClass(SportEntityPrimaryKey.class)
 public class SportEntity implements Serializable {
 
     @Id
-    @EqualsAndHashCode.Include
     @Column(name = "sport_name")
     private String sportName;
 
@@ -32,6 +32,7 @@ public class SportEntity implements Serializable {
     @Column(name = "daily_average_cost")
     private BigDecimal dailyAverageCost;
 
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_parent")
     @JsonManagedReference

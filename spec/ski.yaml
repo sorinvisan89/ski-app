@@ -252,14 +252,38 @@ components:
           format: float
 
     PlaceSearchResult:
-      description: The sport information
+      description: The place information result
       type: object
       properties:
-        placeInfo:
-          $ref: "#/components/schemas/Place"
+        placeName:
+          type: string
+          description: The name of the place
+        sports:
+          type: array
+          items:
+            $ref: "#/components/schemas/SportSearchResult"
         totalCost:
           description: The total cost for the search period
           type: number
+        days:
+          description: The period of days
+          type: integer
+          format: int64
+
+    SportSearchResult:
+      description: The sport information
+      type: object
+      properties:
+        sportName:
+          description: The name of the sport
+          type: string
+        costPerSport:
+          description: The total cost per sport
+          type: number
+        averageCostPerDay:
+          description: The cost per day
+          type: number
+
 
 
 
