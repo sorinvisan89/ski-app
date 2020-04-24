@@ -1,6 +1,7 @@
 package com.demo.skiapp.entity.specification;
 
 import com.demo.skiapp.entity.PlaceEntity;
+import java.util.Arrays;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
@@ -24,7 +25,7 @@ public class PlaceSpecification implements Specification<PlaceEntity> {
         if (StringUtils.hasText(search)) {
             final String toSearch = "%" + search.toLowerCase() + "%";
             Predicate matches = cb.disjunction();
-            matches.getExpressions().addAll(List.of(
+            matches.getExpressions().addAll(Arrays.asList(
                     cb.like(cb.lower(root.get("placeName")), toSearch),
                     cb.like(cb.lower(root.get("zone")), toSearch),
                     cb.like(cb.lower(root.get("region")), toSearch),

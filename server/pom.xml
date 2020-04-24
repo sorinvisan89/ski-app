@@ -64,7 +64,7 @@
                 <version>${openapi-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>ski-openapi-api</id>
+                        <id>ski-server-openapi-api</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -101,9 +101,7 @@
                         </configuration>
                     </execution>
                 </executions>
-
             </plugin>
-
 
 
         </plugins>
