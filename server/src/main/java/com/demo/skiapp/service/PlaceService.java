@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional
@@ -32,9 +33,10 @@ public class PlaceService {
     private final ServiceUtils serviceUtils;
 
     @Autowired
-    public PlaceService(PlaceRepository placeRepository,
-                        CustomDataMapper customDataMapper,
-                        ServiceUtils serviceUtils) {
+    public PlaceService(
+            PlaceRepository placeRepository,
+            CustomDataMapper customDataMapper,
+            ServiceUtils serviceUtils) {
         this.placeRepository = placeRepository;
         this.customDataMapper = customDataMapper;
         this.serviceUtils = serviceUtils;
@@ -55,16 +57,21 @@ public class PlaceService {
         placeRepository.save(toPersist);
     }
 
-    public List<Place> getPlaces(String freeTextSearchPattern,
-                                 Integer page,
-                                 Integer limit) {
-        Page<PlaceEntity> entites = placeRepository.findAll(
-                new PlaceSpecification(freeTextSearchPattern),
-                PageRequest.of(page, limit));
+    public List<Place> getPlaces(
+            String freeTextSearchPattern,
+            Integer page,
+            Integer limit) {
 
-        return entites.getContent().stream()
-                .map(customDataMapper::toPlaceModel)
-                .collect(Collectors.toList());
+        if (StringUtils.isEmpty(freeTextSearchPattern)) {
+            Page<PlaceEntity> entites = placeRepository.findAll(PageRequest.of(page, limit));
+            return mapPageToModel(entites);
+        } else {
+            Page<PlaceEntity> entites = placeRepository.findAll(
+                    new PlaceSpecification(freeTextSearchPattern),
+                    PageRequest.of(page, limit));
+
+            return mapPageToModel(entites);
+        }
     }
 
     public void deletePlace(String placeName) {
@@ -101,7 +108,6 @@ public class PlaceService {
         placeRepository.save(toUpdate);
     }
 
-
     public void update(String placeName, UpdatablePlaceFields updatablePlaceFields) {
         PlaceEntity toUpdate = serviceUtils.shouldFindById(placeName, placeRepository::findById);
 
@@ -121,5 +127,11 @@ public class PlaceService {
         }
 
         placeRepository.save(toUpdate);
+    }
+
+    private List<Place> mapPageToModel(Page<PlaceEntity> entites) {
+        return entites.getContent().stream()
+                .map(customDataMapper::toPlaceModel)
+                .collect(Collectors.toList());
     }
 }

@@ -79,10 +79,12 @@
                         <configuration>
                             <inputSpec>${project.basedir}/../spec/ski.yaml</inputSpec>
                             <generatorName>java</generatorName>
+                            <library>resttemplate</library>
+
                             <modelPackage>com.demo.skiapp.model</modelPackage>
                             <apiPackage>com.demo.skiapp.api</apiPackage>
                             <invokerPackage>com.demo.skiapp.invoker</invokerPackage>
-                            <library>resttemplate</library>
+
                             <generateModels>false</generateModels>
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateApiTests>false</generateApiTests>
