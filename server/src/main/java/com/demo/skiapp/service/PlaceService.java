@@ -104,8 +104,6 @@ public class PlaceService {
                 toUpdate.addSport(newSport);
             });
         }
-
-        placeRepository.save(toUpdate);
     }
 
     public void update(String placeName, UpdatablePlaceFields updatablePlaceFields) {
@@ -125,8 +123,6 @@ public class PlaceService {
         } else {
             toUpdate.setSports(null);
         }
-
-        placeRepository.save(toUpdate);
     }
 
     private List<Place> mapPageToModel(Page<PlaceEntity> entites) {
